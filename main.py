@@ -1,44 +1,51 @@
 #!/usr/bin/python
 # coding=utf-8
-import RPi.GPIO as GPIO
+from gpiozero import Robot
 import serial
 import curses
-#from time import sleep
+from time import sleep
 
 
-GPIO.setmode(GPIO.BOARD) # Physical numeration pins
-direcciones = {
-	259: ("a", "Avanzando..."),
-	258: ("r", "Retrocediendo..."),
-	260: ("di", "Izquierda..."),
-	261: ("dd", "Derecha..."),
+robot = Robot(left=(6, 13), right=(19, 26))
+directions = {
+	259: 	[robot.forward(), "Forward..."],
+	258: 	[robot.backward(), "Backbard..."],
+	260: 	[robot.left(), "Turning left..."],
+	261: 	[robot.right(), "Turning right..."],
+	32: 	[robot.stop(), "Stoped"],
 }
 
 def main(stdscr):
 	try:
-		# define el puerto a utilizar
-		# ser = ser = serial.Serial('/dev/cu.usbmodem1411', 9600) # for Mac OS X
-		ser = serial.Serial('/dev/ttyACM0', 9600) # for Raspberry Pi
-
-		# no espera por el ingreso cuando es llamado
+		# no wait for input
 		stdscr.nodelay(1)
 		while True:
-			# obtiene entrada por teclado, devuelve -1 en caso de no disponible
-			c = stdscr.getch()
-			if c != -1:
-				comando, texto = direcciones[int(c)]
-				# imprime un valor numerico
-				stdscr.addstr(" {0}{1}".format(texto, ' ' * 7))
+			# gets keyboard input. returns -1 if unavailable
+			# curses.halfdelay(1)
+			key = stdscr.getch()
+			if key != -1:
+				text = directions[int(key)][1]
+				stdscr.addstr(" {0}{1}".format(text, ' ' * 7))
 				stdscr.refresh()
-				# devuelve el cursor a la posicion inicial
+
+				if key == 259:
+					robot.forward()
+				elif key == 258:
+					robot.backward()
+				elif key == 260:
+					robot.right()
+				elif key == 261:
+					robot.left()
+				elif key == 32:
+					robot.stop()
+				# returns cursor to actual position
 				stdscr.move(0, 0)
-				# envia el comando a Arduino a traves del puerto COM
-				ser.write(comando)
 
 	except Exception as e:
+		import pudb; pudb.set_trace()
 		print str(e)
 	finally:
-		GPIO.cleanup()
+		pass
 
 if __name__ == '__main__':
 	curses.wrapper(main)
