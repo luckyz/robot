@@ -12,7 +12,7 @@ directions = {
 	258: 	[robot.backward(), "Backbard..."],
 	260: 	[robot.left(), "Turning left..."],
 	261: 	[robot.right(), "Turning right..."],
-	32: 	[robot.stop(), "Stoped"],
+	32: 	[robot.stop(), "Stopped"],
 }
 
 def main(stdscr):
