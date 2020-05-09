@@ -32,15 +32,15 @@ def main(stdscr):
 				stdscr.refresh()
 
 				if key == 259:
-					robot.forward()
+					robot.backward(speed=0.6)
 				elif key == 258:
-					robot.backward()
+					robot.forward(speed=1)
 				elif key == 260:
-					robot.right()
+					robot.right(speed=0.5)
 					left_light.off()
 					right_light.blink(on_time=0.4, off_time=0.4)
 				elif key == 261:
-					robot.left()
+					robot.left(speed=0.5)
 					left_light.blink(on_time=0.4, off_time=0.4)
 					right_light.off()
 				elif key == 32:
