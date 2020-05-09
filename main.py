@@ -1,12 +1,14 @@
 #!/usr/bin/python
 # coding=utf-8
-from gpiozero import Robot
+from gpiozero import Robot, LED
 import serial
 import curses
 from time import sleep
 
 
 robot = Robot(left=(6, 13), right=(19, 26))
+left_light = LED(18)
+right_light = LED(21)
 directions = {
 	259: 	[robot.forward(), "Forward..."],
 	258: 	[robot.backward(), "Backbard..."],
@@ -24,6 +26,7 @@ def main(stdscr):
 			# curses.halfdelay(1)
 			key = stdscr.getch()
 			if key != -1:
+				directions[int(key)][0]
 				text = directions[int(key)][1]
 				stdscr.addstr(" {0}{1}".format(text, ' ' * 7))
 				stdscr.refresh()
@@ -34,10 +37,16 @@ def main(stdscr):
 					robot.backward()
 				elif key == 260:
 					robot.right()
+					left_light.off()
+					right_light.blink(on_time=0.4, off_time=0.4)
 				elif key == 261:
 					robot.left()
+					left_light.blink(on_time=0.4, off_time=0.4)
+					right_light.off()
 				elif key == 32:
 					robot.stop()
+					left_light.on()
+					right_light.on()
 				# returns cursor to actual position
 				stdscr.move(0, 0)
 
