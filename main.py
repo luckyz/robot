@@ -9,7 +9,16 @@ from time import sleep
 robot = Robot(left=(6, 13), right=(19, 26))
 left_light = LED(18)
 right_light = LED(21)
-directions = {
+gears = { # {gear: speed}
+	0: 0,
+	1: 0.2,
+	2: 0.4,
+	3: 0.6,
+	4: 0.8,
+	5: 1
+}
+gear = 0
+directions = { # direction: [action, text]
 	259: 	[robot.forward(), "Forward..."],
 	258: 	[robot.backward(), "Backbard..."],
 	260: 	[robot.left(), "Turning left..."],
@@ -32,21 +41,31 @@ def main(stdscr):
 				stdscr.refresh()
 
 				if key == 259:
-					robot.backward(speed=0.6)
+					robot.backward(speed=gears[gear] * 60 / 100)
 				elif key == 258:
-					robot.forward(speed=1)
+					robot.forward(speed=gears[gear])
 				elif key == 260:
-					robot.right(speed=0.5)
+					robot.right(speed=gears[gear] * 50 / 100)
 					left_light.off()
 					right_light.blink(on_time=0.4, off_time=0.4)
 				elif key == 261:
-					robot.left(speed=0.5)
+					robot.left(speed=gears[gear] * 50 / 100)
 					left_light.blink(on_time=0.4, off_time=0.4)
 					right_light.off()
 				elif key == 32:
 					robot.stop()
 					left_light.on()
 					right_light.on()
+				elif key == bajar_cambio (q | ctrl):
+					if gear != 0:
+						gear =- 1
+					else:
+						gear = 0
+				elif key == subir_cambio (e | shift):
+					if gear != 5:
+						gear =+ 1
+					else:
+						gear = 5
 				# returns cursor to actual position
 				stdscr.move(0, 0)
 
